@@ -233,6 +233,13 @@ extern uintptr_t pios_com_debug_id;
 #define PIOS_TIM_MAX_DEVS				8
 
 //-------------------------
+// GPIO
+//-------------------------
+#define PIOS_GPIO_PORTS				{ GPIOA, GPIOC }
+#define PIOS_GPIO_PINS				{ GPIO_Pin_4, GPIO_Pin_6 }
+#define PIOS_GPIO_NUM				2
+
+//-------------------------
 // ADC
 //-------------------------
 #define PIOS_ADC_SUB_DRIVER_MAX_INSTANCES       3
