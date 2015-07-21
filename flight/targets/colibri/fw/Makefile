@@ -82,7 +82,7 @@ MAVLINKINC = $(FLIGHTLIB)/mavlink/v1.0/common
 # optional component libraries
 include $(APPLIBDIR)/ChibiOS/library.mk
 #include $(PIOSCOMMONLIB)/dosfs/library.mk
-#include $(FLIGHTLIB)/CMSIS3/DSP_Lib/library.mk
+#include $(PIOSCOMMONLIB)/CMSIS3/DSP_Lib/library.mk
 
 
 # List C source files here. (C dependencies are automatically generated.)

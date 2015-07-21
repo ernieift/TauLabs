@@ -36,7 +36,9 @@
 
 struct pios_led {
 	struct stm32_gpio pin;
+#ifndef STM32F7XX
 	uint32_t remap;
+#endif
 	bool active_high;
 };
 

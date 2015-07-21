@@ -659,7 +659,7 @@ fw_$(1)_clean:
 endef
 
 # $(1) = Canonical board name all in lower case (e.g. coptercontrol)
-# $(2) = CPU arch (e.g. f1, f3, f4)
+# $(2) = CPU arch (e.g. f1, f3, f4, f7)
 # $(3) = Short name for board (e.g CC)
 define BL_TEMPLATE
 .PHONY: bl_$(1)

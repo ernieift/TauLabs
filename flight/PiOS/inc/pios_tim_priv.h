@@ -5,7 +5,11 @@
 
 struct pios_tim_clock_cfg {
 	TIM_TypeDef * timer;
+#if defined(STM32F7XX)
+	const TIM_Base_InitTypeDef * time_base_init;
+#else
 	const TIM_TimeBaseInitTypeDef * time_base_init;
+#endif
 	struct stm32_irq irq;
 	struct stm32_irq irq2;
 };
@@ -15,7 +19,9 @@ struct pios_tim_channel {
 	uint8_t timer_chan;
 
 	struct stm32_gpio pin;
+#ifndef STM32F7XX
 	uint32_t remap;
+#endif
 };
 
 struct pios_tim_callbacks {
