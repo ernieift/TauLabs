@@ -36,7 +36,7 @@
 
 /* Enable/Disable PiOS Modules */
 //#define PIOS_INCLUDE_ADC
-//#define PIOS_INCLUDE_DELAY
+#define PIOS_INCLUDE_DELAY
 //#define PIOS_INCLUDE_I2C
 //#define WDG_STATS_DIAGNOSTICS
 //#define PIOS_INCLUDE_IRQ
@@ -52,7 +52,7 @@
 //#define PIOS_INCLUDE_USB_CDC
 #define PIOS_INCLUDE_GPIO
 //#define PIOS_INCLUDE_EXTI
-//#define PIOS_INCLUDE_RTC
+#define PIOS_INCLUDE_RTC
 #define PIOS_INCLUDE_WDG
 //#define PIOS_INCLUDE_FASTHEAP
 //#define PIOS_INCLUDE_HPWM

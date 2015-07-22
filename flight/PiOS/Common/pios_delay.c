@@ -48,11 +48,16 @@ static uint32_t us_modulo;
 
 int32_t PIOS_DELAY_Init(void)
 {
+#ifndef STM32F7XX
 	RCC_ClocksTypeDef	clocks;
 
 	/* compute the number of system clocks per microsecond */
 	RCC_GetClocksFreq(&clocks);
 	us_ticks = clocks.SYSCLK_Frequency / 1000000;
+#else
+	us_ticks = HAL_RCC_GetSysClockFreq() / 1000000;
+#endif
+
 	PIOS_DEBUG_Assert(us_ticks > 1);
 
 	// Split this into two steps to avoid 64bit maths

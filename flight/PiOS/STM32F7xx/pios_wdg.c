@@ -41,11 +41,9 @@
 static struct wdg_configuration {
 	uint32_t used_flags;
 	uint32_t bootup_flags;
-	RTC_HandleTypeDef hrtc;
-#if defined(PIOS_INCLUDE_WDG)
-	IWDG_HandleTypeDef hiwdg;
-#endif
 } wdg_configuration;
+
+static IWDG_HandleTypeDef hiwdg;
 
 /** 
  * @brief Initialize the watchdog timer for a specified timeout
@@ -73,23 +71,24 @@ uint16_t PIOS_WDG_Init()
 	__HAL_DBGMCU_FREEZE_IWDG();
 
 	// configure and start watchdog
-	wdg_configuration.hiwdg.Instance = IWDG;
-	wdg_configuration.hiwdg.Init.Prescaler = IWDG_PRESCALER_16;
-	wdg_configuration.hiwdg.Init.Window = delay;
-	wdg_configuration.hiwdg.Init.Reload = delay;
-	HAL_IWDG_Init(&wdg_configuration.hiwdg);
-	HAL_IWDG_Start(&wdg_configuration.hiwdg);
+	hiwdg.Instance = IWDG;
+	hiwdg.Init.Prescaler = IWDG_PRESCALER_16;
+	hiwdg.Init.Window = delay;
+	hiwdg.Init.Reload = delay;
+	HAL_IWDG_Init(&hiwdg);
+	HAL_IWDG_Start(&hiwdg);
 
 	// watchdog flags now stored in backup registers
 	HAL_PWR_EnableBkUpAccess();
-	wdg_configuration.hrtc.Instance = RTC;
-	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
+
+	RTC_HandleTypeDef hrtc = { .Instance = RTC };
+	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 
 	/*
 	 * Start from an empty set of registered flags so previous boots
 	 * can't influence the current one
 	 */
-	HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, 0);
+	HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, 0);
 #endif
 	return delay;
 }
@@ -136,14 +135,15 @@ bool PIOS_WDG_UpdateFlag(uint16_t flag)
 	// efficiency and not blocking critical tasks.  race condition could 
 	// overwrite their flag update, but unlikely to block _all_ of them 
 	// for the timeout window
-	uint16_t cur_flags = HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
+	RTC_HandleTypeDef hrtc = { .Instance = RTC };
+	uint16_t cur_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 	
 	if((cur_flags | flag) == wdg_configuration.used_flags) {
 		PIOS_WDG_Clear();
-		HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, flag);
+		HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, flag);
 		return true;
 	} else {
-		HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, cur_flags | flag);
+		HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, cur_flags | flag);
 		return false;
 	}
 		
@@ -171,7 +171,8 @@ uint16_t PIOS_WDG_GetBootupFlags()
  */
 uint16_t PIOS_WDG_GetActiveFlags()
 {
-	return HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
+	RTC_HandleTypeDef hrtc = { .Instance = RTC };
+	return HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 }
 
 /**
@@ -182,6 +183,6 @@ uint16_t PIOS_WDG_GetActiveFlags()
 void PIOS_WDG_Clear(void)
 {
 #if defined(PIOS_INCLUDE_WDG)
-	HAL_IWDG_Refresh(&wdg_configuration.hiwdg);
+	HAL_IWDG_Refresh(&hiwdg);
 #endif
 }

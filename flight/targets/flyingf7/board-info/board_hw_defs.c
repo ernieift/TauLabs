@@ -864,7 +864,7 @@ static const struct pios_usart_cfg pios_usart5_cfg = {
 void PIOS_RTC_IRQ_Handler (void);
 void RTC_WKUP_IRQHandler() __attribute__ ((alias ("PIOS_RTC_IRQ_Handler")));
 static const struct pios_rtc_cfg pios_rtc_main_cfg = {
-	.clksrc = RCC_RTCCLKSource_HSE_Div8, // Divide 8 Mhz crystal down to 1
+	.clksrc = RCC_RTCCLKSOURCE_HSE_DIV8, // Divide 8 Mhz crystal down to 1
 	.prescaler = 100, // Every 100 cycles gives 625 Hz
 	.irq = {
 		.init = {
