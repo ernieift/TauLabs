@@ -40,7 +40,7 @@
 /*****************************************************************************************
  *	Public Definitions/Macros
  ****************************************************************************************/
-#if defined(STM32F4XX) || defined(STM32F30X)
+#if defined(STM32F4XX) || defined(STM32F30X) || defined(STM32F7XX)
 #define MAGIC_REG_1     RTC_BKP_DR1
 #define MAGIC_REG_2     RTC_BKP_DR2
 #define IAP_BOOTCOUNT   RTC_BKP_DR3
