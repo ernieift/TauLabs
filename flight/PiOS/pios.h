@@ -50,7 +50,7 @@
 /* STM32 Std Perf Lib */
 #if defined(STM32F7XX)
 #include <stm32f7xx.h>
-#include <stm32f7xx_hal_rcc.h>
+#include <stm32f7xx_hal.h>
 #elif defined(STM32F4XX)
 #include <stm32f4xx.h>
 #include <stm32f4xx_rcc.h>

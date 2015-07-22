@@ -37,13 +37,14 @@
  */
 
 #include "pios.h"
-#include "stm32f7xx_hal_pwr.h"
-//#include "stm32f4xx_dbgmcu.h"
-//#include "stm32f4xx_rtc.h"
 
 static struct wdg_configuration {
 	uint32_t used_flags;
 	uint32_t bootup_flags;
+	RTC_HandleTypeDef hrtc;
+#if defined(PIOS_INCLUDE_WDG)
+	IWDG_HandleTypeDef hiwdg;
+#endif
 } wdg_configuration;
 
 /** 
@@ -68,26 +69,27 @@ uint16_t PIOS_WDG_Init()
 	if (delay > 0x0fff)
 		delay = 0x0fff;
 #if defined(PIOS_INCLUDE_WDG)
-	DBGMCU_Config(DBGMCU_IWDG_STOP, ENABLE);	// make the watchdog stop counting in debug mode
-	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-	IWDG_SetPrescaler(IWDG_Prescaler_16);
-	IWDG_SetReload(delay);
-	IWDG_ReloadCounter();
-	IWDG_Enable();
+	// make the watchdog stop counting in debug mode
+	__HAL_DBGMCU_FREEZE_IWDG();
+
+	// configure and start watchdog
+	wdg_configuration.hiwdg.Instance = IWDG;
+	wdg_configuration.hiwdg.Init.Prescaler = IWDG_PRESCALER_16;
+	wdg_configuration.hiwdg.Init.Window = delay;
+	wdg_configuration.hiwdg.Init.Reload = delay;
+	HAL_IWDG_Init(&wdg_configuration.hiwdg);
+	HAL_IWDG_Start(&wdg_configuration.hiwdg);
 
 	// watchdog flags now stored in backup registers
 	HAL_PWR_EnableBkUpAccess();
-
-void              HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister, uint32_t Data);
-uint32_t          HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister);
-
-	wdg_configuration.bootup_flags = RTC_ReadBackupRegister(PIOS_WDG_REGISTER);
+	wdg_configuration.hrtc.Instance = RTC;
+	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
 
 	/*
 	 * Start from an empty set of registered flags so previous boots
 	 * can't influence the current one
 	 */
-	RTC_WriteBackupRegister(PIOS_WDG_REGISTER, 0);
+	HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, 0);
 #endif
 	return delay;
 }
@@ -134,14 +136,14 @@ bool PIOS_WDG_UpdateFlag(uint16_t flag)
 	// efficiency and not blocking critical tasks.  race condition could 
 	// overwrite their flag update, but unlikely to block _all_ of them 
 	// for the timeout window
-	uint16_t cur_flags = RTC_ReadBackupRegister(PIOS_WDG_REGISTER);
+	uint16_t cur_flags = HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
 	
 	if((cur_flags | flag) == wdg_configuration.used_flags) {
 		PIOS_WDG_Clear();
-		RTC_WriteBackupRegister(PIOS_WDG_REGISTER, flag);
+		HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, flag);
 		return true;
 	} else {
-		RTC_WriteBackupRegister(PIOS_WDG_REGISTER, cur_flags | flag);
+		HAL_RTCEx_BKUPWrite(&wdg_configuration.hrtc, PIOS_WDG_REGISTER, cur_flags | flag);
 		return false;
 	}
 		
@@ -169,7 +171,7 @@ uint16_t PIOS_WDG_GetBootupFlags()
  */
 uint16_t PIOS_WDG_GetActiveFlags()
 {
-	return RTC_ReadBackupRegister(PIOS_WDG_REGISTER);
+	return HAL_RTCEx_BKUPRead(&wdg_configuration.hrtc, PIOS_WDG_REGISTER);
 }
 
 /**
@@ -180,6 +182,6 @@ uint16_t PIOS_WDG_GetActiveFlags()
 void PIOS_WDG_Clear(void)
 {
 #if defined(PIOS_INCLUDE_WDG)
-	IWDG_ReloadCounter();
+	HAL_IWDG_Refresh(&wdg_configuration.hiwdg);
 #endif
 }
