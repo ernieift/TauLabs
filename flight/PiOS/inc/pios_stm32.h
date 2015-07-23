@@ -37,7 +37,7 @@ typedef enum
 { 
   Bit_RESET = GPIO_PIN_RESET,
   Bit_SET = GPIO_PIN_SET
-}BitAction; // same as GPIO_PinState
+} BitAction; // same as GPIO_PinState
 
 typedef struct
 {
