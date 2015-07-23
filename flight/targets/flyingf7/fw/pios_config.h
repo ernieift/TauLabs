@@ -83,11 +83,11 @@
 #define PIOS_INCLUDE_GPS_UBX_PARSER
 
 /* Supported receiver interfaces */
-//#define PIOS_INCLUDE_RCVR
+#define PIOS_INCLUDE_RCVR
 //#define PIOS_INCLUDE_DSM
 //#define PIOS_INCLUDE_SBUS
-//#define PIOS_INCLUDE_PPM
-//#define PIOS_INCLUDE_PWM
+#define PIOS_INCLUDE_PPM
+#define PIOS_INCLUDE_PWM
 //#define PIOS_INCLUDE_GCSRCVR
 
 #define PIOS_INCLUDE_FLASH

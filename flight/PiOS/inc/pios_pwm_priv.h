@@ -37,7 +37,11 @@
 #include <pios_tim_priv.h>
 
 struct pios_pwm_cfg {
+#ifdef STM32F7XX
+	TIM_IC_InitTypeDef tim_ic_init;
+#else
 	TIM_ICInitTypeDef tim_ic_init;
+#endif
 	const struct pios_tim_channel * channels;
 	uint8_t num_channels;
 };
