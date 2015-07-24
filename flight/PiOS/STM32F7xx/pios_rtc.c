@@ -43,7 +43,7 @@ struct rtc_callback_entry {
   uintptr_t data;
 };
 
-static RTC_HandleTypeDef hrtc;
+extern RTC_HandleTypeDef hrtc;
 
 #define PIOS_RTC_MAX_CALLBACKS 3
 struct rtc_callback_entry rtc_callback_list[PIOS_RTC_MAX_CALLBACKS];

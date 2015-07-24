@@ -161,13 +161,11 @@ static int32_t PIOS_Flash_Internal_WriteData(uintptr_t chip_id, uint32_t chip_of
 
 	/* Write the data */
 	for (uint16_t i = 0; i < len; i++) {
-		HAL_StatusTypeDef status;
 		/*
 		 * This is inefficient.  Should try to do word writes.
 		 * Not sure if word writes need to be aligned though.
 		 */
-		status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, FLASH_BASE + chip_offset + i, data[i]);
-		PIOS_Assert(status == HAL_OK);
+		PIOS_Assert(HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, FLASH_BASE + chip_offset + i, data[i]) == HAL_OK);
 	}
 
 	return 0;

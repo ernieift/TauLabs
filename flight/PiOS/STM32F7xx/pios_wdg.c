@@ -43,7 +43,8 @@ static struct wdg_configuration {
 	uint32_t bootup_flags;
 } wdg_configuration;
 
-static IWDG_HandleTypeDef hiwdg;
+extern IWDG_HandleTypeDef hiwdg;
+extern RTC_HandleTypeDef hrtc;
 
 /** 
  * @brief Initialize the watchdog timer for a specified timeout
@@ -85,7 +86,7 @@ uint16_t PIOS_WDG_Init()
 	// watchdog flags now stored in backup registers
 	HAL_PWR_EnableBkUpAccess();
 
-	RTC_HandleTypeDef hrtc = { .Instance = RTC };
+	hrtc.Instance = RTC;
 	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 
 	/*
@@ -139,7 +140,6 @@ bool PIOS_WDG_UpdateFlag(uint16_t flag)
 	// efficiency and not blocking critical tasks.  race condition could 
 	// overwrite their flag update, but unlikely to block _all_ of them 
 	// for the timeout window
-	RTC_HandleTypeDef hrtc = { .Instance = RTC };
 	uint16_t cur_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 	
 	if((cur_flags | flag) == wdg_configuration.used_flags) {
@@ -175,7 +175,6 @@ uint16_t PIOS_WDG_GetBootupFlags()
  */
 uint16_t PIOS_WDG_GetActiveFlags()
 {
-	RTC_HandleTypeDef hrtc = { .Instance = RTC };
 	return HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
 }
 
