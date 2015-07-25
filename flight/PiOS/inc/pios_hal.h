@@ -45,11 +45,6 @@ extern RTC_HandleTypeDef * PIOS_HAL_RTC_GetHandle();
 extern CRC_HandleTypeDef * PIOS_HAL_CRC_GetHandle();
 #endif
 
-#ifdef HAL_TIM_MODULE_ENABLED
-extern TIM_HandleTypeDef * PIOS_HAL_TIM_FindHandle(TIM_TypeDef *timer);
-extern TIM_HandleTypeDef * PIOS_HAL_TIM_AllocHandle(TIM_TypeDef *timer);
-#endif
-
 #endif /* PIOS_HAL_H */
 
 /**

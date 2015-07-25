@@ -43,9 +43,6 @@ static struct wdg_configuration {
 	uint32_t bootup_flags;
 } wdg_configuration;
 
-extern IWDG_HandleTypeDef hiwdg;
-extern RTC_HandleTypeDef hrtc;
-
 /** 
  * @brief Initialize the watchdog timer for a specified timeout
  *
@@ -72,12 +69,13 @@ uint16_t PIOS_WDG_Init()
 	__HAL_DBGMCU_FREEZE_IWDG();
 
 	// configure and start watchdog
-	hiwdg.Instance = IWDG;
-	hiwdg.Init.Prescaler = IWDG_PRESCALER_16;
-	hiwdg.Init.Window = delay;
-	hiwdg.Init.Reload = delay;
-	HAL_IWDG_Init(&hiwdg);
-	HAL_IWDG_Start(&hiwdg);
+	IWDG_HandleTypeDef * hiwdg = PIOS_HAL_IWDG_GetHandle();
+	hiwdg->Instance = IWDG;
+	hiwdg->Init.Prescaler = IWDG_PRESCALER_16;
+	hiwdg->Init.Window = delay;
+	hiwdg->Init.Reload = delay;
+	HAL_IWDG_Init(hiwdg);
+	HAL_IWDG_Start(hiwdg);
 
 	// Enable PWR and BKP clock for backup sram
 	HAL_PWREx_EnableBkUpReg();
@@ -86,14 +84,15 @@ uint16_t PIOS_WDG_Init()
 	// watchdog flags now stored in backup registers
 	HAL_PWR_EnableBkUpAccess();
 
-	hrtc.Instance = RTC;
-	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
+	RTC_HandleTypeDef * hrtc = PIOS_HAL_RTC_GetHandle();
+	hrtc->Instance = RTC;
+	wdg_configuration.bootup_flags = HAL_RTCEx_BKUPRead(hrtc, PIOS_WDG_REGISTER);
 
 	/*
 	 * Start from an empty set of registered flags so previous boots
 	 * can't influence the current one
 	 */
-	HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, 0);
+	HAL_RTCEx_BKUPWrite(hrtc, PIOS_WDG_REGISTER, 0);
 #endif
 	return delay;
 }
@@ -140,14 +139,15 @@ bool PIOS_WDG_UpdateFlag(uint16_t flag)
 	// efficiency and not blocking critical tasks.  race condition could 
 	// overwrite their flag update, but unlikely to block _all_ of them 
 	// for the timeout window
-	uint16_t cur_flags = HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
+	RTC_HandleTypeDef * hrtc = PIOS_HAL_RTC_GetHandle();
+	uint16_t cur_flags = HAL_RTCEx_BKUPRead(hrtc, PIOS_WDG_REGISTER);
 	
 	if((cur_flags | flag) == wdg_configuration.used_flags) {
 		PIOS_WDG_Clear();
-		HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, flag);
+		HAL_RTCEx_BKUPWrite(hrtc, PIOS_WDG_REGISTER, flag);
 		return true;
 	} else {
-		HAL_RTCEx_BKUPWrite(&hrtc, PIOS_WDG_REGISTER, cur_flags | flag);
+		HAL_RTCEx_BKUPWrite(hrtc, PIOS_WDG_REGISTER, cur_flags | flag);
 		return false;
 	}
 		
@@ -175,7 +175,8 @@ uint16_t PIOS_WDG_GetBootupFlags()
  */
 uint16_t PIOS_WDG_GetActiveFlags()
 {
-	return HAL_RTCEx_BKUPRead(&hrtc, PIOS_WDG_REGISTER);
+	RTC_HandleTypeDef * hrtc = PIOS_HAL_RTC_GetHandle();
+	return HAL_RTCEx_BKUPRead(hrtc, PIOS_WDG_REGISTER);
 }
 
 /**
@@ -186,6 +187,6 @@ uint16_t PIOS_WDG_GetActiveFlags()
 void PIOS_WDG_Clear(void)
 {
 #if defined(PIOS_INCLUDE_WDG)
-	HAL_IWDG_Refresh(&hiwdg);
+	HAL_IWDG_Refresh( PIOS_HAL_IWDG_GetHandle() );
 #endif
 }

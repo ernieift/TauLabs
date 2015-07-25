@@ -34,8 +34,6 @@
 #include <pios_board_info.h>
 #include <stdbool.h>
 
-extern CRC_HandleTypeDef hcrc;
-
 uint8_t *PIOS_BL_HELPER_FLASH_If_Read(uint32_t SectorAddress)
 {
 	return (uint8_t *) (SectorAddress);
@@ -46,7 +44,8 @@ uint32_t PIOS_BL_HELPER_CRC_Memory_Calc()
 	const struct pios_board_info * bdinfo = &pios_board_info_blob;
 
 	PIOS_BL_HELPER_CRC_Ini();
-	return HAL_CRC_Calculate(&hcrc, (uint32_t *) bdinfo->fw_base, (bdinfo->fw_size) >> 2);
+	CRC_HandleTypeDef * hcrc = PIOS_HAL_CRC_GetHandle();
+	return HAL_CRC_Calculate(hcrc, (uint32_t *) bdinfo->fw_base, (bdinfo->fw_size) >> 2);
 }
 
 void PIOS_BL_HELPER_FLASH_Read_Description(uint8_t * array, uint8_t size)
@@ -62,13 +61,14 @@ void PIOS_BL_HELPER_FLASH_Read_Description(uint8_t * array, uint8_t size)
 
 void PIOS_BL_HELPER_CRC_Ini()
 {
-	hcrc.Instance = CRC;
-	hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
-	hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
-	hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
-	hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-	hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
+	CRC_HandleTypeDef * hcrc = PIOS_HAL_CRC_GetHandle();
+	hcrc->Instance = CRC;
+	hcrc->Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+	hcrc->Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+	hcrc->Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+	hcrc->Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+	hcrc->InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
 
-	HAL_CRC_Init(&hcrc);
+	HAL_CRC_Init(hcrc);
 }
 #endif

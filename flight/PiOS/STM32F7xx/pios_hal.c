@@ -79,18 +79,6 @@ RTC_HandleTypeDef * PIOS_HAL_RTC_GetHandle()
 {
 	return &hrtc;
 }
-/* RTC interrupt callback */
-#if defined(PIOS_INCLUDE_RTC)
-#include <pios_rtc_priv.h>
-void RTC_WKUP_IRQHandler(void)
-{
-  HAL_RTCEx_WakeUpTimerIRQHandler(&hrtc);
-}
-void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
-{
-	PIOS_RTC_irq_handler();
-}
-#endif
 #endif
 
 /* CRC handle */
@@ -103,46 +91,3 @@ CRC_HandleTypeDef * PIOS_HAL_CRC_GetHandle()
 }
 #endif
 
-/* Timer handles */
-#ifdef HAL_TIM_MODULE_ENABLED
-static TIM_HandleTypeDef htim[PIOS_TIM_MAX_DEVS];
-
-TIM_HandleTypeDef * PIOS_HAL_TIM_FindHandle(TIM_TypeDef *timer)
-{
-	/* Check the TIM value */
-	if (IS_TIM_INSTANCE(timer) == 0)
-		return NULL;
-
-	/* Try to find the TIM handle */
-	for (uint8_t i = 0; i < PIOS_TIM_MAX_DEVS; i++)
-	{
-		if (htim[i].Instance == timer)
-			return &htim[i];
-	}
-
-	/* Found nothing */
-	return NULL;
-}
-
-TIM_HandleTypeDef * PIOS_HAL_TIM_AllocHandle(TIM_TypeDef *timer)
-{
-	/* Check the TIM value */
-	if (IS_TIM_INSTANCE(timer) == 0)
-		return NULL;
-
-	/* Try to find the handle first */
-	TIM_HandleTypeDef *tmp = PIOS_HAL_TIM_FindHandle(timer);
-	if (tmp)
-		return tmp;
-
-	/* Try to find a free TIM handle */
-	for (uint8_t i = 0; i < PIOS_TIM_MAX_DEVS; i++)
-	{
-		if (IS_TIM_INSTANCE(htim[i].Instance) == 0)
-			return &htim[i];
-	}
-
-	/* No free handle and timer mot found */
-	return NULL;
-}
-#endif

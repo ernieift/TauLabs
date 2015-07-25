@@ -35,6 +35,10 @@
 #include "pios_tim.h"
 #include "pios_tim_priv.h"
 
+/* lokal macros for direct access to timer register */
+#define TIM_GetITStatus(__TIMER__, __INTERRUPT__) ((((__TIMER__)->DIER & (__INTERRUPT__)) == (__INTERRUPT__)) ? SET : RESET)
+#define TIM_ClearITPendingBit(__TIMER__, __INTERRUPT__) ((__TIMER__)->SR = ~(__INTERRUPT__))
+
 enum pios_tim_dev_magic {
 	PIOS_TIM_DEV_MAGIC = 0x87654098,
 };
@@ -129,10 +133,6 @@ out_fail:
 
 static void PIOS_TIM_generic_irq_handler(TIM_TypeDef * timer)
 {
-	/* generate a HAL handle */
-	TIM_HandleTypeDef htim;
-	htim.Instance = timer;
-
 	/* Iterate over all registered clients of the TIM layer to find channels on this timer */
 	for (uint8_t i = 0; i < pios_tim_num_devs; i++) {
 		const struct pios_tim_dev * tim_dev = &pios_tim_devs[i];
@@ -145,8 +145,8 @@ static void PIOS_TIM_generic_irq_handler(TIM_TypeDef * timer)
 		/* Check for an overflow event on this timer */
 		bool overflow_event;
 		uint16_t overflow_count;
-		if (TIM_GET_ITSTATUS(&htim, TIM_FLAG_UPDATE) == SET) {
-			TIM_GET_CLEAR_IT(&htim, TIM_IT_UPDATE);
+		if (TIM_GetITStatus(timer, TIM_IT_UPDATE) == SET) {
+			TIM_ClearITPendingBit(timer, TIM_IT_UPDATE);
 			overflow_count = timer->ARR;
 			overflow_event = true;
 		} else {
@@ -184,8 +184,8 @@ static void PIOS_TIM_generic_irq_handler(TIM_TypeDef * timer)
 
 			bool edge_event;
 			uint16_t edge_count;
-			if (TIM_GET_ITSTATUS(&htim, timer_it) == SET) {
-				TIM_GET_CLEAR_IT(&htim, timer_it);
+			if (TIM_GetITStatus(timer, timer_it) == SET) {
+				TIM_ClearITPendingBit(timer, timer_it);
 
 				/* Read the current counter */
 				switch(chan->timer_chan) {
@@ -274,68 +274,6 @@ static void PIOS_TIM_generic_irq_handler(TIM_TypeDef * timer)
 		}
 	}
 }
-#if 0
-	uint16_t val = 0;
-	for(uint8_t i = 0; i < pios_pwm_cfg.num_channels; i++) {
-		struct pios_pwm_channel channel = pios_pwm_cfg.channels[i];
-		if ((channel.timer == timer) && (TIM_GetITStatus(channel.timer, channel.ccr) == SET)) {
-			
-			TIM_ClearITPendingBit(channel.timer, channel.ccr);
-			
-			switch(channel.channel) {
-				case TIM_Channel_1:
-					val = TIM_GetCapture1(channel.timer);
-					break;
-				case TIM_Channel_2:
-					val = TIM_GetCapture2(channel.timer);
-					break;
-				case TIM_Channel_3:
-					val = TIM_GetCapture3(channel.timer);
-					break;
-				case TIM_Channel_4:
-					val = TIM_GetCapture4(channel.timer);
-					break;					
-			}
-			
-			if (CaptureState[i] == 0) {
-				RiseValue[i] = val; 
-			} else {
-				FallValue[i] = val;
-			}
-			
-			// flip state machine and capture value here
-			/* Simple rise or fall state machine */
-			TIM_ICInitTypeDef TIM_ICInitStructure = pios_pwm_cfg.tim_ic_init;
-			if (CaptureState[i] == 0) {
-				/* Switch states */
-				CaptureState[i] = 1;
-				
-				/* Switch polarity of input capture */
-				TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;
-				TIM_ICInitStructure.TIM_Channel = channel.channel;
-				TIM_ICInit(channel.timer, &TIM_ICInitStructure);				
-			} else {
-				/* Capture computation */
-				if (FallValue[i] > RiseValue[i]) {
-					CaptureValue[i] = (FallValue[i] - RiseValue[i]);
-				} else {
-					CaptureValue[i] = ((channel.timer->ARR - RiseValue[i]) + FallValue[i]);
-				}
-				
-				/* Switch states */
-				CaptureState[i] = 0;
-				
-				/* Increase supervisor counter */
-				CapCounter[i]++;
-				
-				/* Switch polarity of input capture */
-				TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
-				TIM_ICInitStructure.TIM_Channel = channel.channel;
-				TIM_ICInit(channel.timer, &TIM_ICInitStructure);
-			}
-		}		
-	}
-#endif
 
 /* Bind Interrupt Handlers
  *
@@ -364,9 +302,9 @@ static void PIOS_TIM_1_BRK_TIM_9_irq_handler (void)
 	CH_IRQ_PROLOGUE();
 #endif /* defined(PIOS_INCLUDE_CHIBIOS) */
 
-	if (TIM_GET_ITSTATUS(TIM1, TIM_IT_BREAK)) {
+	if (TIM_GetITStatus(TIM1, TIM_IT_BREAK)) {
 		PIOS_TIM_generic_irq_handler(TIM1);
-	} else if (TIM_GET_ITSTATUS(TIM9, TIM_IT_UPDATE | TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4 | TIM_IT_COM | TIM_IT_TRIGGER | TIM_IT_BREAK)) {
+	} else if (TIM_GetITStatus(TIM9, TIM_IT_UPDATE | TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4 | TIM_IT_COM | TIM_IT_TRIGGER | TIM_IT_BREAK)) {
 		PIOS_TIM_generic_irq_handler (TIM9);
 	}
 
