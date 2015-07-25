@@ -31,7 +31,7 @@
 #ifndef PIOS_STM32_H
 #define PIOS_STM32_H
 
-/* define missing but used structures in STM32F7XX HAL Driver system */
+/* define missing but used structures and functions in STM32F7XX HAL Driver system */
 #if defined(STM32F7XX)
 typedef enum
 { 
@@ -47,7 +47,7 @@ typedef struct
 	FunctionalState NVIC_IRQChannelCmd;
 } NVIC_InitTypeDef; // workaround for old NVIC system
 
-extern void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
+void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
 #endif
 
 struct stm32_irq {
