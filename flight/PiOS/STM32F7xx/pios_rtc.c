@@ -47,6 +47,9 @@ struct rtc_callback_entry {
 struct rtc_callback_entry rtc_callback_list[PIOS_RTC_MAX_CALLBACKS];
 static uint8_t rtc_callback_next = 0;
 
+/* RTC handle */
+static RTC_HandleTypeDef hrtc;
+
 void PIOS_RTC_Init(const struct pios_rtc_cfg * cfg)
 {
 	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {
@@ -57,23 +60,25 @@ void PIOS_RTC_Init(const struct pios_rtc_cfg * cfg)
 	HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
 	// initialize RTC
-	RTC_HandleTypeDef * hrtc = PIOS_HAL_RTC_GetHandle();
-	hrtc->Instance = RTC;
-	hrtc->Init.HourFormat = RTC_HOURFORMAT_24;
-	hrtc->Init.AsynchPrediv = 127;
-	hrtc->Init.SynchPrediv = 255;
-	hrtc->Init.OutPut = RTC_OUTPUT_DISABLE;
-	hrtc->Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-	hrtc->Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-	HAL_RTC_Init(hrtc);
+	hrtc.Instance = RTC;
+	hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+	hrtc.Init.AsynchPrediv = 127;
+	hrtc.Init.SynchPrediv = 255;
+	hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+	hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+	hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+	HAL_RTC_Init(&hrtc);
 
-	// configure RTC to get finaly a 625Hz interval and enable WakeUp interrupt
-	HAL_RTCEx_SetWakeUpTimer_IT(hrtc, cfg->prescaler, RTC_WAKEUPCLOCK_RTCCLK_DIV16);
+	// configure RTC to get finaly a 625Hz interval
+	HAL_RTCEx_SetWakeUpTimer(&hrtc, cfg->prescaler, RTC_WAKEUPCLOCK_RTCCLK_DIV16);
+
+	// enable Interrupts
+	NVIC_Init((NVIC_InitTypeDef*)&cfg->irq.init);
 }
 
 uint32_t PIOS_RTC_Counter()
 {
-	return HAL_RTCEx_GetWakeUpTimer( PIOS_HAL_RTC_GetHandle() );
+	return HAL_RTCEx_GetWakeUpTimer(&hrtc);
 }
 
 /* FIXME: This shouldn't use hard-coded clock rates, dividers or prescalers.
@@ -123,6 +128,8 @@ void PIOS_RTC_irq_handler(void)
 	CH_IRQ_EPILOGUE();
 #endif /* defined(PIOS_INCLUDE_CHIBIOS) */
 }
+void RTC_WKUP_IRQHandler(void) __attribute__ ((alias ("PIOS_RTC_irq_handler")));
+
 #endif
 
 /** 

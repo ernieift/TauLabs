@@ -61,33 +61,4 @@ void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
 * @brief This functions hold the global device handels and do the function callbacks
 */
 
-/* IWDG handle */
-#ifdef HAL_IWDG_MODULE_ENABLED
-static IWDG_HandleTypeDef hiwdg;
-
-IWDG_HandleTypeDef * PIOS_HAL_IWDG_GetHandle()
-{
-	return &hiwdg;
-}
-#endif
-
-/* RTC handle */
-#ifdef HAL_RTC_MODULE_ENABLED
-static RTC_HandleTypeDef hrtc;
-
-RTC_HandleTypeDef * PIOS_HAL_RTC_GetHandle()
-{
-	return &hrtc;
-}
-#endif
-
-/* CRC handle */
-#ifdef HAL_CRC_MODULE_ENABLED
-static CRC_HandleTypeDef hcrc;
-
-CRC_HandleTypeDef * PIOS_HAL_CRC_GetHandle()
-{
-	return &hcrc;
-}
-#endif
 

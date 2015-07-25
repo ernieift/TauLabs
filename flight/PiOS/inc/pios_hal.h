@@ -32,18 +32,7 @@
 #define PIOS_HAL_H
 
 /* Public Functions */
-
-#ifdef HAL_IWDG_MODULE_ENABLED
-extern IWDG_HandleTypeDef * PIOS_HAL_IWDG_GetHandle();
-#endif
-
-#ifdef HAL_RTC_MODULE_ENABLED
-extern RTC_HandleTypeDef * PIOS_HAL_RTC_GetHandle();
-#endif
-
-#ifdef HAL_CRC_MODULE_ENABLED
-extern CRC_HandleTypeDef * PIOS_HAL_CRC_GetHandle();
-#endif
+void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
 
 #endif /* PIOS_HAL_H */
 
