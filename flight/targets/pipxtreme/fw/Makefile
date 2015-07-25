@@ -80,7 +80,7 @@ MSDDIR  = $(APPLIBDIR)/msd
 RTOSDIR = $(PIOSCOMMON)/Libraries/FreeRTOS
 RTOSSRCDIR = $(RTOSDIR)/Source
 RTOSINCDIR = $(RTOSSRCDIR)/include
-RTOSPORTDIR = $(APPLIBDIR)/FreeRTOS/Source
+RTOSPORTDIR = $(RTOSSRCDIR)/portable
 
 # List C source files here. (C dependencies are automatically generated.)
 # use file-extension c for "c-only"-files
@@ -204,7 +204,7 @@ SRC += $(RTOSSRCDIR)/queue.c
 SRC += $(RTOSSRCDIR)/tasks.c
 
 ## RTOS Portable
-SRC += $(RTOSPORTDIR)/portable/GCC/ARM_CM3/port.c
+SRC += $(RTOSPORTDIR)/GCC/ARM_CM3/port.c
 
 # List C source files here which must be compiled in ARM-Mode (no -mthumb).
 # use file-extension c for "c-only"-files
@@ -255,7 +255,7 @@ EXTRAINCDIRS  += $(DOSFSDIR)
 EXTRAINCDIRS  += $(MSDDIR)
 EXTRAINCDIRS  += $(RTOSINCDIR)
 EXTRAINCDIRS  += $(APPLIBDIR)
-EXTRAINCDIRS  += $(RTOSPORTDIR)/portable/GCC/ARM_CM3
+EXTRAINCDIRS  += $(RTOSPORTDIR)/GCC/ARM_CM3
 
 EXTRAINCDIRS += ${foreach MOD, ${OPTMODULES} ${MODULES}, ${OPMODULEDIR}/${MOD}/inc} ${OPMODULEDIR}/System/inc
 

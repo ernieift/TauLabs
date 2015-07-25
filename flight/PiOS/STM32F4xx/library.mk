@@ -52,7 +52,7 @@ SRC				+=	$(wildcard $(USBDEVLIB)/Core/src/*.c)
 # the device-specific pieces of the code.
 #
 ifneq ($(FREERTOS_DIR),)
-FREERTOS_PORTDIR	:=	$(PIOS_DEVLIB)/Libraries/FreeRTOS/Source
-EXTRAINCDIRS		+=	$(FREERTOS_PORTDIR)/portable/GCC/ARM_CM4F
-SRC					+=	$(wildcard $(FREERTOS_PORTDIR)/portable/GCC/ARM_CM4F/*.c)
+FREERTOS_PORTDIR	:=	$(FREERTOS_DIR)/portable
+EXTRAINCDIRS		+=	$(FREERTOS_PORTDIR)/GCC/ARM_CM4F
+SRC					+=	$(wildcard $(FREERTOS_PORTDIR)/GCC/ARM_CM4F/*.c)
 endif
