@@ -1,15 +1,14 @@
 /**
  ******************************************************************************
- * @addtogroup TauLabsTargets Tau Labs Targets
- * @{
- * @addtogroup FlyingF4 FlyingF4 support files
- * @{
  *
- * @file       pios_usb_board_data.h
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
- * @brief      Defines for board specific usb information
- * @see        The GNU Public License (GPL) Version 3
- * 
+ * @file       flyingf7.h
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
+ *
+ * @addtogroup GCSPlugins GCS Plugins
+ * @{
+ * @addtogroup Boards_Stm Stm boards support Plugin
+ * @{
+ * @brief Plugin to support boards from STM
  *****************************************************************************/
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -26,22 +25,27 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+#ifndef FLYINGF7_H
+#define FLYINGF7_H
 
-#ifndef PIOS_USB_BOARD_DATA_H
-#define PIOS_USB_BOARD_DATA_H
+#include <coreplugin/iboardtype.h>
 
-#define PIOS_USB_BOARD_CDC_DATA_LENGTH 64
-#define PIOS_USB_BOARD_CDC_MGMT_LENGTH 32
-#define PIOS_USB_BOARD_HID_DATA_LENGTH 64
+class IBoardType;
 
-#define PIOS_USB_BOARD_EP_NUM 4
+class FlyingF7 : public Core::IBoardType
+{
+public:
+    FlyingF7();
+    virtual ~FlyingF7();
 
-#include "pios_usb_defs.h" 	/* USB_* macros */
+    virtual QString shortName();
+    virtual QString boardDescription();
+    virtual bool queryCapabilities(BoardCapabilities capability);
+    virtual QStringList getSupportedProtocols();
+    virtual QPixmap getBoardPicture();
+    virtual QString getHwUAVO();
+    virtual int queryMaxGyroRate();
+};
 
-#define PIOS_USB_BOARD_VENDOR_ID USB_VENDOR_ID_CLAYLOGIC
-#define PIOS_USB_BOARD_PRODUCT_ID USB_PRODUCT_ID_FLYINGF7
 
-#define PIOS_USB_BOARD_DEVICE_VER USB_OP_DEVICE_VER(0, USB_OP_BOARD_MODE_FW)
-#define PIOS_USB_BOARD_SN_SUFFIX "+FW"
-
-#endif	/* PIOS_USB_BOARD_DATA_H */
+#endif // FLYINGF7_H
