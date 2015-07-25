@@ -112,7 +112,8 @@
 #include <pios_gpio.h>
 #include <pios_exti.h>
 #include <pios_wdg.h>
-
+#include <pios_hal.h>
+ 
 /* PIOS Hardware Includes (Common) */
 #include <pios_heap.h>
 #include <pios_sdcard.h>

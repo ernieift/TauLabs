@@ -43,8 +43,6 @@ struct rtc_callback_entry {
   uintptr_t data;
 };
 
-extern RTC_HandleTypeDef hrtc;
-
 #define PIOS_RTC_MAX_CALLBACKS 3
 struct rtc_callback_entry rtc_callback_list[PIOS_RTC_MAX_CALLBACKS];
 static uint8_t rtc_callback_next = 0;
@@ -59,22 +57,23 @@ void PIOS_RTC_Init(const struct pios_rtc_cfg * cfg)
 	HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
 	// initialize RTC
-	hrtc.Instance = RTC;
-	hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
-	hrtc.Init.AsynchPrediv = 127;
-	hrtc.Init.SynchPrediv = 255;
-	hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
-	hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-	hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-	HAL_RTC_Init(&hrtc);
+	RTC_HandleTypeDef * hrtc = PIOS_HAL_RTC_GetHandle();
+	hrtc->Instance = RTC;
+	hrtc->Init.HourFormat = RTC_HOURFORMAT_24;
+	hrtc->Init.AsynchPrediv = 127;
+	hrtc->Init.SynchPrediv = 255;
+	hrtc->Init.OutPut = RTC_OUTPUT_DISABLE;
+	hrtc->Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+	hrtc->Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+	HAL_RTC_Init(hrtc);
 
 	// configure RTC to get finaly a 625Hz interval and enable WakeUp interrupt
-	HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, cfg->prescaler, RTC_WAKEUPCLOCK_RTCCLK_DIV16);
+	HAL_RTCEx_SetWakeUpTimer_IT(hrtc, cfg->prescaler, RTC_WAKEUPCLOCK_RTCCLK_DIV16);
 }
 
 uint32_t PIOS_RTC_Counter()
 {
-	return HAL_RTCEx_GetWakeUpTimer(&hrtc);
+	return HAL_RTCEx_GetWakeUpTimer( PIOS_HAL_RTC_GetHandle() );
 }
 
 /* FIXME: This shouldn't use hard-coded clock rates, dividers or prescalers.
@@ -105,36 +104,20 @@ bool PIOS_RTC_RegisterTickCallback(void (*fn)(uintptr_t id), uintptr_t data)
 	return true;
 }
 
-void PIOS_RTC_irq_handler (void)
+void PIOS_RTC_irq_handler(void)
 {
 #if defined(PIOS_INCLUDE_CHIBIOS)
 	CH_IRQ_PROLOGUE();
 #endif /* defined(PIOS_INCLUDE_CHIBIOS) */
 
-	if (__HAL_RTC_WAKEUPTIMER_GET_IT(&hrtc, RTC_IT_WUT) )
+	/* Call all registered WAKEUPTIMER callbacks */
+	for (uint8_t i = 0; i < rtc_callback_next; i++)
 	{
-		/* Get the status of the Interrupt */
-		if (__HAL_RTC_WAKEUPTIMER_GET_IT_SOURCE(&hrtc, RTC_IT_WUT) )
-		{
-			/* Call all registered WAKEUPTIMER callbacks */
-			for (uint8_t i = 0; i < rtc_callback_next; i++)
-			{
-				struct rtc_callback_entry * cb = &rtc_callback_list[i];
-				if (cb->fn) {
-					(cb->fn)(cb->data);
-				}
-			}
-
-		/* Clear the WAKEUPTIMER interrupt pending bit */
-		__HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(&hrtc, RTC_FLAG_WUTF);
+		struct rtc_callback_entry * cb = &rtc_callback_list[i];
+		if (cb->fn) {
+			(cb->fn)(cb->data);
 		}
 	}
-
-	/* Clear the EXTI's line Flag for RTC WakeUpTimer */
-	__HAL_RTC_WAKEUPTIMER_EXTI_CLEAR_FLAG();
-
-	/* Change RTC state */
-	hrtc.State = HAL_RTC_STATE_READY;
 
 #if defined(PIOS_INCLUDE_CHIBIOS)
 	CH_IRQ_EPILOGUE();

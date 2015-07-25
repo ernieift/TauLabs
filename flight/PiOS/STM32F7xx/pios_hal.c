@@ -31,17 +31,118 @@
 /* Project Includes */
 #include "pios.h"
 
-// IWDG handle
+/**
+* @brief This is as replacement for the missing NVIC_Init()
+*/
+#if defined(STM32F7XX)
+void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
+{
+	if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
+	{
+		/* Set priority */
+		HAL_NVIC_SetPriority(
+			NVIC_InitStruct->NVIC_IRQChannel,
+			NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority,
+			NVIC_InitStruct->NVIC_IRQChannelSubPriority
+		);
+
+		/* Enable the selected IRQ Channels */
+		HAL_NVIC_EnableIRQ(NVIC_InitStruct->NVIC_IRQChannel);
+	}
+	else
+	{
+		/* Disable the selected IRQ Channels */
+		HAL_NVIC_DisableIRQ(NVIC_InitStruct->NVIC_IRQChannel);
+	}
+}
+#endif
+
+/**
+* @brief This functions hold the global device handels and do the function callbacks
+*/
+
+/* IWDG handle */
 #ifdef HAL_IWDG_MODULE_ENABLED
-IWDG_HandleTypeDef hiwdg;
+static IWDG_HandleTypeDef hiwdg;
+
+IWDG_HandleTypeDef * PIOS_HAL_IWDG_GetHandle()
+{
+	return &hiwdg;
+}
 #endif
 
-// RTC handle
+/* RTC handle */
 #ifdef HAL_RTC_MODULE_ENABLED
-RTC_HandleTypeDef hrtc;
+static RTC_HandleTypeDef hrtc;
+
+RTC_HandleTypeDef * PIOS_HAL_RTC_GetHandle()
+{
+	return &hrtc;
+}
+/* RTC interrupt callback */
+#if defined(PIOS_INCLUDE_RTC)
+#include <pios_rtc_priv.h>
+void RTC_WKUP_IRQHandler(void)
+{
+  HAL_RTCEx_WakeUpTimerIRQHandler(&hrtc);
+}
+void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
+{
+	PIOS_RTC_irq_handler();
+}
+#endif
 #endif
 
-// CRC handle
+/* CRC handle */
 #ifdef HAL_CRC_MODULE_ENABLED
-CRC_HandleTypeDef hcrc;
+static CRC_HandleTypeDef hcrc;
+
+CRC_HandleTypeDef * PIOS_HAL_CRC_GetHandle()
+{
+	return &hcrc;
+}
+#endif
+
+/* Timer handles */
+#ifdef HAL_TIM_MODULE_ENABLED
+static TIM_HandleTypeDef htim[PIOS_TIM_MAX_DEVS];
+
+TIM_HandleTypeDef * PIOS_HAL_TIM_FindHandle(TIM_TypeDef *timer)
+{
+	/* Check the TIM value */
+	if (IS_TIM_INSTANCE(timer) == 0)
+		return NULL;
+
+	/* Try to find the TIM handle */
+	for (uint8_t i = 0; i < PIOS_TIM_MAX_DEVS; i++)
+	{
+		if (htim[i].Instance == timer)
+			return &htim[i];
+	}
+
+	/* Found nothing */
+	return NULL;
+}
+
+TIM_HandleTypeDef * PIOS_HAL_TIM_AllocHandle(TIM_TypeDef *timer)
+{
+	/* Check the TIM value */
+	if (IS_TIM_INSTANCE(timer) == 0)
+		return NULL;
+
+	/* Try to find the handle first */
+	TIM_HandleTypeDef *tmp = PIOS_HAL_TIM_FindHandle(timer);
+	if (tmp)
+		return tmp;
+
+	/* Try to find a free TIM handle */
+	for (uint8_t i = 0; i < PIOS_TIM_MAX_DEVS; i++)
+	{
+		if (IS_TIM_INSTANCE(htim[i].Instance) == 0)
+			return &htim[i];
+	}
+
+	/* No free handle and timer mot found */
+	return NULL;
+}
 #endif

@@ -41,11 +41,13 @@ typedef enum
 
 typedef struct
 {
-	uint8_t NVIC_IRQChannel;
-	uint8_t NVIC_IRQChannelPreemptionPriority;
-	uint8_t NVIC_IRQChannelSubPriority;
+	IRQn_Type  NVIC_IRQChannel;
+	uint32_t NVIC_IRQChannelPreemptionPriority;
+	uint32_t NVIC_IRQChannelSubPriority;
 	FunctionalState NVIC_IRQChannelCmd;
-} NVIC_InitTypeDef;
+} NVIC_InitTypeDef; // workaround for old NVIC system
+
+extern void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
 #endif
 
 struct stm32_irq {
