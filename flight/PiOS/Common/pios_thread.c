@@ -65,7 +65,11 @@ struct pios_thread *PIOS_Thread_Create(void (*fp)(void *), const char *namep, si
 
 	thread->task_handle = (uintptr_t)NULL;
 
+#if (tskKERNEL_VERSION_MAJOR < 8)
 	if (xTaskCreate(fp, (signed char*)namep, stack_bytes / 4, argp, prio, (xTaskHandle*)&thread->task_handle) != pdPASS)
+#else
+	if (xTaskCreate(fp, namep, stack_bytes / 4, argp, prio, (xTaskHandle*)&thread->task_handle) != pdPASS)
+#endif
 	{
 		PIOS_free(thread);
 		return NULL;
@@ -174,7 +178,7 @@ uint32_t PIOS_Thread_Get_Stack_Usage(struct pios_thread *threadp)
  */
 uint32_t PIOS_Thread_Get_Runtime(struct pios_thread *threadp)
 {
-#if (INCLUDE_uxTaskGetRunTime == 1)
+#if (INCLUDE_uxTaskGetRunTime == 1) && (tskKERNEL_VERSION_MAJOR < 8)
 	return uxTaskGetRunTime((xTaskHandle)threadp->task_handle);
 #else
 	return 0;

@@ -87,7 +87,7 @@ FLIGHTPLANS = $(OPMODULEDIR)/FlightPlan/flightplans
 MAVLINKINC = $(FLIGHTLIB)/mavlink/v1.0/common
 
 # optional component libraries
-include $(PIOSCOMMONLIB)/FreeRTOS/library.mk
+include $(PIOSCOMMONLIB)/FreeRTOS8/library.mk
 #include $(PIOSCOMMONLIB)/dosfs/library.mk
 include $(PIOSCOMMONLIB)/CMSIS4/DSP_Lib/library.mk
 
