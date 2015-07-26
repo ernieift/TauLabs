@@ -36,10 +36,16 @@
 #include <pios_tim_priv.h>
 
 struct pios_servo_cfg {
+#if defined(STM32F7XX)
+	TIM_Base_InitTypeDef tim_base_init;
+	TIM_OC_InitTypeDef tim_oc_init;
+	GPIO_InitTypeDef gpio_init;
+#else
 	TIM_TimeBaseInitTypeDef tim_base_init;
 	TIM_OCInitTypeDef tim_oc_init;
 	GPIO_InitTypeDef gpio_init;
 	uint32_t remap;
+#endif
 	const struct pios_tim_channel * channels;
 	uint8_t num_channels;
 };

@@ -35,7 +35,7 @@
 #include "pios_tim.h"
 #include "pios_tim_priv.h"
 
-/* lokal macros for direct access to timer register */
+/* Private macro definitions  */
 #define TIM_GetITStatus(__TIMER__, __INTERRUPT__) ((((__TIMER__)->DIER & (__INTERRUPT__)) == (__INTERRUPT__)) ? SET : RESET)
 #define TIM_ClearITPendingBit(__TIMER__, __INTERRUPT__) ((__TIMER__)->SR = ~(__INTERRUPT__))
 
@@ -80,9 +80,9 @@ int32_t PIOS_TIM_InitClock(const struct pios_tim_clock_cfg * cfg)
 	HAL_TIM_Base_Init(&htim);
 
 	/* Configure internal timer clocks */
-    TIM_ClockConfigTypeDef sClockSourceConfig = {
-    	.ClockSource = TIM_CLOCKSOURCE_INTERNAL
-    };
+	TIM_ClockConfigTypeDef sClockSourceConfig = {
+	  	.ClockSource = TIM_CLOCKSOURCE_INTERNAL
+	};
 	HAL_TIM_ConfigClockSource(&htim, &sClockSourceConfig);
 
 	/* Enable timers */

@@ -43,7 +43,7 @@
 #define PIOS_INCLUDE_LED
 #define PIOS_INCLUDE_IAP
 #define PIOS_INCLUDE_TIM
-//#define PIOS_INCLUDE_SERVO
+#define PIOS_INCLUDE_SERVO
 //#define PIOS_INCLUDE_SPI
 #define PIOS_INCLUDE_SYS
 //#define PIOS_INCLUDE_USART
@@ -55,7 +55,7 @@
 #define PIOS_INCLUDE_RTC
 #define PIOS_INCLUDE_WDG
 //#define PIOS_INCLUDE_FASTHEAP
-//#define PIOS_INCLUDE_HPWM
+#define PIOS_INCLUDE_HPWM
 
 /* Select the sensors to include */
 //#define PIOS_INCLUDE_HMC5883
