@@ -54,6 +54,6 @@ SRC					+=	$(wildcard $(PERIPHLIB)/src/*.c)
 #
 ifneq ($(FREERTOS_DIR),)
 FREERTOS_PORTDIR	:=	$(FREERTOS_DIR)/portable
-EXTRAINCDIRS		+=	$(FREERTOS_PORTDIR)/GCC/ARM_CM4F
-SRC					+=	$(wildcard $(FREERTOS_PORTDIR)/GCC/ARM_CM4F/*.c)
+EXTRAINCDIRS		+=	$(FREERTOS_PORTDIR)/GCC/ARM_CM7/r0p1
+SRC					+=	$(wildcard $(FREERTOS_PORTDIR)/GCC/ARM_CM7/r0p1/*.c)
 endif

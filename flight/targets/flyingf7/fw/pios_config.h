@@ -67,7 +67,7 @@
 //#define PIOS_INCLUDE_MS5611
 //#define FLASH_FREERTOS
 /* Com systems to include */
-//#define PIOS_INCLUDE_COM
+#define PIOS_INCLUDE_COM
 //#define PIOS_INCLUDE_COM_TELEM
 //#define PIOS_INCLUDE_TELEMETRY_RF
 //#define PIOS_INCLUDE_COM_FLEXI
