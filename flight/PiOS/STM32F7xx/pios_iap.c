@@ -32,7 +32,7 @@
 /****************************************************************************************
  *  Header files
  ****************************************************************************************/
-#include <pios.h>
+#include "pios.h"
 
 /****************************************************************************************
  *  Private Definitions/Macros
@@ -70,8 +70,11 @@
  */
 void PIOS_IAP_Init( void )
 {
+	/* Enable CRC clock */
+	__HAL_RCC_CRC_CLK_ENABLE();
+
 	/* Enable PWR and BKP clock */
-	HAL_PWREx_EnableBkUpReg();
+	__HAL_RCC_PWR_CLK_ENABLE();
 	__HAL_RCC_BKPSRAM_CLK_ENABLE();
 
 	/* Enable write access to Backup domain */

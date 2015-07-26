@@ -56,11 +56,11 @@ struct stm32_irq {
 	NVIC_InitTypeDef init;
 };
 
-struct stm32_exti {
 #ifndef STM32F7XX
+struct stm32_exti {
 	EXTI_InitTypeDef init;
-#endif
 };
+#endif
 
 struct stm32_dma_chan {
 #if defined(STM32F2XX) || defined(STM32F4XX) || defined(STM32F7XX)

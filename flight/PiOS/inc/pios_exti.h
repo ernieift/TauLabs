@@ -37,10 +37,14 @@
 
 struct pios_exti_cfg {
 	bool (* vector)(void);
+#ifndef STM32F7XX
 	uint32_t line;		/* use EXTI_LineN macros */
+#endif
 	struct stm32_gpio pin;
 	struct stm32_irq irq;
+#ifndef STM32F7XX
 	struct stm32_exti exti;
+#endif
 };
 
 /* must be added to any pios_exti_cfg definition for it to be valid */
