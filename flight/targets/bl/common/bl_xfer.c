@@ -39,7 +39,18 @@
 
 static uint32_t bl_compute_partition_crc(uintptr_t partition_id, uint32_t partition_offset, uint32_t length)
 {
+#if defined(STM32F7XX)
+	CRC_HandleTypeDef hcrc;
+	hcrc.Instance = CRC;
+	hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+	hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+	hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+	hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+	hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
+	HAL_CRC_Init(&hcrc);
+#else
 	CRC_ResetDR();
+#endif
 
 	PIOS_FLASH_start_transaction(partition_id);
 	while (length) {
@@ -49,14 +60,22 @@ static uint32_t bl_compute_partition_crc(uintptr_t partition_id, uint32_t partit
 				partition_offset,
 				buf,
 				bytes_to_read);
-		CRC_CalcBlockCRC((uint32_t *)buf, bytes_to_read >> 2);
 
+#if defined(STM32F7XX)
+		HAL_CRC_Calculate(&hcrc, (uint32_t *)buf, bytes_to_read >> 2);
+#else
+		CRC_CalcBlockCRC((uint32_t *)buf, bytes_to_read >> 2);
+#endif
 		partition_offset += bytes_to_read;
 		length           -= bytes_to_read;
 	}
 	PIOS_FLASH_end_transaction(partition_id);
 
+#if defined(STM32F7XX)
+	return CRC->DR;
+#else
 	return CRC_GetCRC();
+#endif
 }
 
 bool bl_xfer_completed_p(const struct xfer_state * xfer)

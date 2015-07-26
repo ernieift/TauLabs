@@ -340,6 +340,16 @@ static void go_jumping_to_app(struct bl_fsm_context * context)
 	/* Disable USB */
 	PIOS_USBHOOK_Deactivate();
 
+#if defined(STM32F7XX)
+	/* Re-lock the internal flash */
+	HAL_FLASH_Lock();
+
+	/* Reset all peripherals */
+	__HAL_RCC_APB2_FORCE_RESET();
+	__HAL_RCC_APB1_FORCE_RESET();
+	__HAL_RCC_APB2_RELEASE_RESET();
+	__HAL_RCC_APB1_RELEASE_RESET();
+#else
 	/* Re-lock the internal flash */
 	FLASH_Lock();
 
@@ -348,6 +358,7 @@ static void go_jumping_to_app(struct bl_fsm_context * context)
 	RCC_APB1PeriphResetCmd(0xffffffff, ENABLE);
 	RCC_APB2PeriphResetCmd(0xffffffff, DISABLE);
 	RCC_APB1PeriphResetCmd(0xffffffff, DISABLE);
+#endif
 
 	/* Initialize user application's stack pointer */
 	__set_MSP(initial_sp);
@@ -453,8 +464,10 @@ int main(void)
 		bl_fsm_inject_event(&bl_fsm_context, BL_EVENT_FORCE_BOOT);
 	}
 
+#if defined(INCLUDE_USB)
 	/* Assume no USB connected */
 	bool usb_connected = false;
+#endif
 
 	uint32_t prev_ticks = PIOS_DELAY_GetuS();
 	while (1) {
@@ -475,6 +488,7 @@ int main(void)
 			prev_ticks += elapsed_ticks;
 		}
 
+#if defined(INCLUDE_USB)
 		/* check for changes in USB connection state */
 		if (!usb_connected) {
 			if (PIOS_USB_CableConnected(0)) {
@@ -487,6 +501,7 @@ int main(void)
 				usb_connected = false;
 			}
 		}
+#endif
 
 		/* Manage any active read transfers */
 		if (bl_fsm_get_state(&bl_fsm_context) == BL_STATE_DFU_READ_IN_PROGRESS) {

@@ -55,8 +55,8 @@ void PIOS_Board_Init() {
 	PIOS_LED_Init(led_cfg);
 #endif	/* PIOS_INCLUDE_LED */
 
-	PWR_BackupAccessCmd(ENABLE);
-	RCC_LSEConfig(RCC_LSE_OFF);
+	HAL_PWR_EnableBkUpAccess();
+	__HAL_RCC_LSE_CONFIG(RCC_LSE_OFF);
 
 	PIOS_LED_On(PIOS_LED_HEARTBEAT);
 	PIOS_LED_On(PIOS_LED_ALARM);

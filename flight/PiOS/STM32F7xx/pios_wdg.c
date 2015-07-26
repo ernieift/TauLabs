@@ -80,10 +80,6 @@ uint16_t PIOS_WDG_Init()
 	// configure RTC handle
 	hrtc.Instance = RTC;
 
-	// Enable PWR and BKP clock for backup sram
-	HAL_PWREx_EnableBkUpReg();
-	__HAL_RCC_BKPSRAM_CLK_ENABLE();
-
 	// watchdog flags now stored in backup registers
 	HAL_PWR_EnableBkUpAccess();
 
