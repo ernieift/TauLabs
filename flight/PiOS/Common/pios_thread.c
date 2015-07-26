@@ -178,7 +178,7 @@ uint32_t PIOS_Thread_Get_Stack_Usage(struct pios_thread *threadp)
  */
 uint32_t PIOS_Thread_Get_Runtime(struct pios_thread *threadp)
 {
-#if (INCLUDE_uxTaskGetRunTime == 1) && (tskKERNEL_VERSION_MAJOR < 8)
+#if (INCLUDE_uxTaskGetRunTime == 1)
 	return uxTaskGetRunTime((xTaskHandle)threadp->task_handle);
 #else
 	return 0;
