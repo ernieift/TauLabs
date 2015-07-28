@@ -3,12 +3,12 @@
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
  * @addtogroup   PIOS_IAP IAP Functions
- * @brief  STM32F4xx PIOS IAP Functions
+ * @brief  STM32F7xx PIOS IAP Functions
  * @{
  *
  * @file       pios_iap.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014-15
  * @brief      In application programming functions
  * @see        The GNU Public License (GPL) Version 3
  * 

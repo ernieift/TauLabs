@@ -2,13 +2,13 @@
  ******************************************************************************
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
- * @addtogroup   PIOS_PPM PPM Functions
- * @brief PIOS interface to read and write from ppm port
+ * @addtogroup   MISC Functions
+ * @brief PIOS misc function for support the STM32F7xx
  * @{
  *
- * @file       pios_ppm_priv.h
- * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
- * @brief      ppm private structures.
+ * @file       misc.h
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
+ * @brief      misc private definitions.
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -28,29 +28,27 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef PIOS_PPM_PRIV_H
-#define PIOS_PPM_PRIV_H
+#ifndef __MISC_H
+#define __MISC_H
 
-#include <pios.h>
-#include <pios_stm32.h>
+typedef enum
+{ 
+  Bit_RESET = GPIO_PIN_RESET,
+  Bit_SET = GPIO_PIN_SET
+} BitAction;
 
-struct pios_ppm_cfg {
-#ifdef STM32F7XX
-	TIM_IC_InitTypeDef tim_ic_init;
-#else
-	TIM_ICInitTypeDef tim_ic_init;
-#endif
-	const struct pios_tim_channel * channels;
-	uint8_t num_channels;
-};
+typedef struct
+{
+  IRQn_Type  NVIC_IRQChannel;
+  uint32_t NVIC_IRQChannelPreemptionPriority;
+  uint32_t NVIC_IRQChannelSubPriority;
+  FunctionalState NVIC_IRQChannelCmd;
+} NVIC_InitTypeDef;
 
-extern const struct pios_rcvr_driver pios_ppm_rcvr_driver;
+extern void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
 
-extern int32_t PIOS_PPM_Init(uintptr_t * ppm_id, const struct pios_ppm_cfg * cfg);
-
-#endif /* PIOS_PPM_PRIV_H */
+#endif /* __MISC_H */
 
 /**
- * @}
- * @}
- */
+  * @}
+  */

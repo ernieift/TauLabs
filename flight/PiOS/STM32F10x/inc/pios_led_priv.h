@@ -2,13 +2,13 @@
  ******************************************************************************
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
- * @addtogroup PIOS_HAL_HANDLES
- * @brief      unique HAL handles
+ * @addtogroup   PIOS_LED LED Functions
+ * @brief PIOS interface for LEDs
  * @{
  *
- * @file       pios_hal.c
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
- * @brief      collection of global handles for HAL access
+ * @file       pios_led_priv.h
+ * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
+ * @brief      LED private definitions.
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -28,37 +28,28 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-/* Project Includes */
-#include "pios.h"
+#ifndef PIOS_LED_PRIV_H
+#define PIOS_LED_PRIV_H
+
+#include <pios.h>
+#include <pios_stm32.h>
+
+struct pios_led {
+	struct stm32_gpio pin;
+	uint32_t remap;
+	bool active_high;
+};
+
+struct pios_led_cfg {
+	const struct pios_led * leds;
+	uint8_t num_leds;
+};
+
+extern int32_t PIOS_LED_Init(const struct pios_led_cfg * cfg);
+
+#endif /* PIOS_LED_PRIV_H */
 
 /**
-* @brief This is as replacement for the missing NVIC_Init()
-*/
-#if defined(STM32F7XX)
-void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
-{
-	if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
-	{
-		/* Set priority */
-		HAL_NVIC_SetPriority(
-			NVIC_InitStruct->NVIC_IRQChannel,
-			NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority,
-			NVIC_InitStruct->NVIC_IRQChannelSubPriority
-		);
-
-		/* Enable the selected IRQ Channels */
-		HAL_NVIC_EnableIRQ(NVIC_InitStruct->NVIC_IRQChannel);
-	}
-	else
-	{
-		/* Disable the selected IRQ Channels */
-		HAL_NVIC_DisableIRQ(NVIC_InitStruct->NVIC_IRQChannel);
-	}
-}
-#endif
-
-/**
-* @brief This functions hold the global device handels and do the function callbacks
-*/
-
-
+  * @}
+  * @}
+  */

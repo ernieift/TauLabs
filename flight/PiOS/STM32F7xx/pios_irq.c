@@ -8,6 +8,7 @@
  *
  * @file       pios_irq.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
  * @brief      IRQ Enable/Disable routines
  * @see        The GNU Public License (GPL) Version 3
  * 

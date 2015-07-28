@@ -31,32 +31,13 @@
 #ifndef PIOS_STM32_H
 #define PIOS_STM32_H
 
-/* define missing but used structures and functions in STM32F7XX HAL Driver system */
-#if defined(STM32F7XX)
-typedef enum
-{ 
-  Bit_RESET = GPIO_PIN_RESET,
-  Bit_SET = GPIO_PIN_SET
-} BitAction; // same as GPIO_PinState
-
-typedef struct
-{
-	IRQn_Type  NVIC_IRQChannel;
-	uint32_t NVIC_IRQChannelPreemptionPriority;
-	uint32_t NVIC_IRQChannelSubPriority;
-	FunctionalState NVIC_IRQChannelCmd;
-} NVIC_InitTypeDef; // workaround for old NVIC system
-
-void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
-#endif
-
 struct stm32_irq {
 	void (*handler) (uint32_t);
 	uint32_t flags;
 	NVIC_InitTypeDef init;
 };
 
-#ifndef STM32F7XX
+#if !defined(STM32F7XX)
 struct stm32_exti {
 	EXTI_InitTypeDef init;
 };
@@ -81,7 +62,7 @@ struct stm32_dma {
 struct stm32_gpio {
 	GPIO_TypeDef *gpio;
 	GPIO_InitTypeDef init;
-#ifndef STM32F7XX
+#if !defined(STM32F7XX)
 	uint8_t pin_source;
 #endif
 };

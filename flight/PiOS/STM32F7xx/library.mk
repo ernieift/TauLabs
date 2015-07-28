@@ -5,6 +5,7 @@
 #
 # Compiler options implied by the F7xx
 #
+CDEFS				+= -DSTM32F7
 CDEFS				+= -DSTM32F7XX
 CDEFS				+= -DSTM32F746xx
 CDEFS				+= -DHSE_VALUE=$(OSCILLATOR_FREQ)

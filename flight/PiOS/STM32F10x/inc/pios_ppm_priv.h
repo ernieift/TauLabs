@@ -2,13 +2,13 @@
  ******************************************************************************
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
- * @addtogroup   PIOS_LED LED Functions
- * @brief PIOS interface for LEDs
+ * @addtogroup   PIOS_PPM PPM Functions
+ * @brief PIOS interface to read and write from ppm port
  * @{
  *
- * @file       pios_led_priv.h
+ * @file       pios_ppm_priv.h
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
- * @brief      LED private definitions.
+ * @brief      ppm private structures.
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -28,30 +28,25 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef PIOS_LED_PRIV_H
-#define PIOS_LED_PRIV_H
+#ifndef PIOS_PPM_PRIV_H
+#define PIOS_PPM_PRIV_H
 
 #include <pios.h>
 #include <pios_stm32.h>
 
-struct pios_led {
-	struct stm32_gpio pin;
-#ifndef STM32F7XX
-	uint32_t remap;
-#endif
-	bool active_high;
+struct pios_ppm_cfg {
+	TIM_ICInitTypeDef tim_ic_init;
+	const struct pios_tim_channel * channels;
+	uint8_t num_channels;
 };
 
-struct pios_led_cfg {
-	const struct pios_led * leds;
-	uint8_t num_leds;
-};
+extern const struct pios_rcvr_driver pios_ppm_rcvr_driver;
 
-extern int32_t PIOS_LED_Init(const struct pios_led_cfg * cfg);
+extern int32_t PIOS_PPM_Init(uintptr_t * ppm_id, const struct pios_ppm_cfg * cfg);
 
-#endif /* PIOS_LED_PRIV_H */
+#endif /* PIOS_PPM_PRIV_H */
 
 /**
-  * @}
-  * @}
-  */
+ * @}
+ * @}
+ */

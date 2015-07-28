@@ -9,7 +9,7 @@
  *
  * @file       pios_exti.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014-15
  * @brief      External Interrupt Handlers
  * @see        The GNU Public License (GPL) Version 3
  *

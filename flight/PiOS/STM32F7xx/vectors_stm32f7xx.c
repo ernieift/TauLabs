@@ -4,8 +4,8 @@
  * @{
  *
  * @file       vector_stm32f7xx.c
- * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
- * @brief      C based vectors for F4
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
+ * @brief      C based vectors for F7
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -87,7 +87,7 @@ HANDLER(TIM8_TRG_COM_TIM14_IRQHandler);   // TIM8 Trigger and Commutation and TI
 HANDLER(TIM8_CC_IRQHandler);              // TIM8 Capture Compare
 HANDLER(DMA1_Stream7_IRQHandler);         // DMA1 Stream7
 HANDLER(FSMC_IRQHandler);                 // FSMC
-HANDLER(SDIO_IRQHandler);                 // SDIO
+HANDLER(SDMMC1_IRQHandler);               // SDMMC1
 HANDLER(TIM5_IRQHandler);                 // TIM5
 HANDLER(SPI3_IRQHandler);                 // SPI3
 HANDLER(USART4_IRQHandler);               // UART4
@@ -120,6 +120,22 @@ HANDLER(DCMI_IRQHandler);                 // DCMI
 HANDLER(CRYP_IRQHandler);                 // CRYP crypto
 HANDLER(HASH_RNG_IRQHandler);             // Hash and Rng
 HANDLER(FPU_IRQHandler);                  // FPU
+HANDLER(UART7_IRQHandler);                // UART7
+HANDLER(UART8_IRQHandler);                // UART8
+HANDLER(SPI4_IRQHandler);                 // SPI4
+HANDLER(SPI5_IRQHandler);                 // SPI5
+HANDLER(SPI6_IRQHandler);                 // SPI6
+HANDLER(SAI1_IRQHandler);                 // SAI1
+HANDLER(LTDC_IRQHandler);                 // LTDC
+HANDLER(LTDC_ER_IRQHandler);              // LTDC error
+HANDLER(DMA2D_IRQHandler);                // DMA2D
+HANDLER(SAI2_IRQHandler);                 // SAI2
+HANDLER(QUADSPI_IRQHandler);              // QUADSPI
+HANDLER(LPTIM1_IRQHandler);               // LPTIM1
+HANDLER(CEC_IRQHandler);                  // HDMI_CEC
+HANDLER(I2C4_EV_IRQHandler);              // I2C4 Event                                             
+HANDLER(I2C4_ER_IRQHandler);              // I2C4 Error 
+HANDLER(SPDIF_RX_IRQHandler);             // SPDIF_RX
 
 /** stm32f7xx interrupt vector table */
 vector *io_vectors[] __attribute__((section(".io_vectors"))) = {
@@ -172,7 +188,7 @@ vector *io_vectors[] __attribute__((section(".io_vectors"))) = {
 	TIM8_CC_IRQHandler,                // TIM8 Capture Compare
 	DMA1_Stream7_IRQHandler,           // DMA1 Stream7
 	FSMC_IRQHandler,                   // FSMC
-	SDIO_IRQHandler,                   // SDIO
+	SDMMC1_IRQHandler,                 // SDMMC1
 	TIM5_IRQHandler,                   // TIM5
 	SPI3_IRQHandler,                   // SPI3
 	USART4_IRQHandler,                 // UART4
@@ -205,6 +221,22 @@ vector *io_vectors[] __attribute__((section(".io_vectors"))) = {
 	CRYP_IRQHandler,                   // CRYP crypto
 	HASH_RNG_IRQHandler,               // Hash and Rng
 	FPU_IRQHandler,                    // FPU
+	UART7_IRQHandler,                  // UART7
+	UART8_IRQHandler,                  // UART8
+	SPI4_IRQHandler,                   // SPI4
+	SPI5_IRQHandler,                   // SPI5
+	SPI6_IRQHandler,                   // SPI6
+	SAI1_IRQHandler,                   // SAI1
+	LTDC_IRQHandler,                   // LTDC
+	LTDC_ER_IRQHandler,                // LTDC error
+	DMA2D_IRQHandler,                  // DMA2D
+	SAI2_IRQHandler,                   // SAI2
+	QUADSPI_IRQHandler,                // QUADSPI
+	LPTIM1_IRQHandler,                 // LPTIM1
+	CEC_IRQHandler,                    // HDMI_CEC
+	I2C4_EV_IRQHandler,                // I2C4 Event                                             
+	I2C4_ER_IRQHandler,                // I2C4 Error 
+	SPDIF_RX_IRQHandler,               // SPDIF_RX
 };
 
 /**

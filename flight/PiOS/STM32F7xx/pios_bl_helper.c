@@ -8,6 +8,7 @@
  *
  * @file       pios_bl_helper.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
  * @brief      Bootloader Helper Functions
  * @see        The GNU Public License (GPL) Version 3
  *

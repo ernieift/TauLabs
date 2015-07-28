@@ -2,13 +2,13 @@
  ******************************************************************************
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
- * @addtogroup   PIOS_SERVO Servo Functions
- * @brief PIOS interface to read and write from servo PWM ports
+ * @addtogroup   PIOS_PPM PPM Functions
+ * @brief PIOS interface to read and write from ppm port
  * @{
  *
- * @file       pios_servo_priv.h
+ * @file       pios_ppm_priv.h
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
- * @brief      Servo private structures.
+ * @brief      ppm private structures.
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -28,29 +28,23 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef PIOS_PWM_PRIV_H
-#define PIOS_PWM_PRIV_H
+#ifndef PIOS_PPM_PRIV_H
+#define PIOS_PPM_PRIV_H
 
 #include <pios.h>
 #include <pios_stm32.h>
 
-#include <pios_tim_priv.h>
-
-struct pios_pwm_cfg {
-#ifdef STM32F7XX
-	TIM_IC_InitTypeDef tim_ic_init;
-#else
+struct pios_ppm_cfg {
 	TIM_ICInitTypeDef tim_ic_init;
-#endif
 	const struct pios_tim_channel * channels;
 	uint8_t num_channels;
 };
 
-extern const struct pios_rcvr_driver pios_pwm_rcvr_driver;
+extern const struct pios_rcvr_driver pios_ppm_rcvr_driver;
 
-extern int32_t PIOS_PWM_Init(uintptr_t * pwm_id, const struct pios_pwm_cfg * cfg);
+extern int32_t PIOS_PPM_Init(uintptr_t * ppm_id, const struct pios_ppm_cfg * cfg);
 
-#endif /* PIOS_PWM_PRIV_H */
+#endif /* PIOS_PPM_PRIV_H */
 
 /**
  * @}
