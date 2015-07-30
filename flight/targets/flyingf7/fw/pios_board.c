@@ -2,11 +2,11 @@
  ******************************************************************************
  * @addtogroup TauLabsTargets Tau Labs Targets
  * @{
- * @addtogroup FlyingF4 FlyingF4 support files
+ * @addtogroup FlyingF7 FlyingF7 support files
  * @{
  *
  * @file       pios_board.c
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
  * @brief      The board specific initialization routines
  * @see        The GNU Public License (GPL) Version 3
  * 
@@ -45,7 +45,7 @@
 #include "modulesettings.h"
 
 /* This file defines the what and where regarding all hardware connected to the
- * FlyingF4 board. Please see hardware/Production/FlyingF4/pinout.txt for
+ * FlyingF7 board. Please see hardware/Production/FlyingF7/pinout.txt for
  * an overview.
  */
 
@@ -949,7 +949,7 @@ void PIOS_Board_Init(void) {
 	}
 
 	uint8_t hw_accel_range;
-	HwFlyingF4AccelRangeGet(&hw_accel_range);
+	HwFlyingF7AccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
 		case HWFLYINGF7_ACCELRANGE_2G:
 			PIOS_MPU6050_SetAccelRange(PIOS_MPU60X0_ACCEL_2G);
@@ -1014,7 +1014,7 @@ void PIOS_Board_Init(void) {
 
 			// setup sensor orientation
 			uint8_t ExtMagOrientation;
-			HwFlyingF4ExtMagOrientationGet(&ExtMagOrientation);
+			HwFlyingF7ExtMagOrientationGet(&ExtMagOrientation);
 
 			enum pios_hmc5883_orientation hmc5883_orientation = \
 				(ExtMagOrientation == HWFLYINGF7_EXTMAGORIENTATION_TOP0DEGCW) ? PIOS_HMC5883_TOP_0DEG : \

@@ -59,16 +59,16 @@ SRC	+=	$(PIOS_DEVLIB)/pios_iap.c
 SRC	+=	$(PIOS_DEVLIB)/pios_irq.c
 SRC	+=	$(PIOS_DEVLIB)/pios_led.c
 SRC	+=	$(PIOS_DEVLIB)/pios_rtc.c
-SRC	+=	$(PIOS_DEVLIB)/pios_spi.c
+#SRC	+=	$(PIOS_DEVLIB)/pios_spi.c
 SRC	+=	$(PIOS_DEVLIB)/pios_sys.c
 SRC	+=	$(PIOS_DEVLIB)/pios_tim.c
-SRC	+=	$(PIOS_DEVLIB)/pios_usb.c
-SRC	+=	$(PIOS_DEVLIB)/pios_usb_cdc.c
-SRC	+=	$(PIOS_DEVLIB)/pios_usb_hid.c
-SRC	+=	$(PIOS_DEVLIB)/pios_usbhook.c
+#SRC	+=	$(PIOS_DEVLIB)/pios_usb.c
+#SRC	+=	$(PIOS_DEVLIB)/pios_usb_cdc.c
+#SRC	+=	$(PIOS_DEVLIB)/pios_usb_hid.c
+#SRC	+=	$(PIOS_DEVLIB)/pios_usbhook.c
 SRC	+=	$(PIOS_DEVLIB)/pios_wdg.c
 SRC	+=	$(PIOS_DEVLIB)/startup.c
-SRC	+=	$(PIOS_DEVLIB)/vectors_stm32f4xx.c
+SRC	+=	$(PIOS_DEVLIB)/vectors_stm32f7xx.c
 LINKER_SCRIPTS_BL	 =	$(PIOS_DEVLIB)/link_STM32F7xx_BL_memory.ld \
 						$(PIOS_DEVLIB)/link_STM32F7xx_sections.ld
 

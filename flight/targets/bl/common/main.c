@@ -337,8 +337,10 @@ static void go_jumping_to_app(struct bl_fsm_context * context)
 	 * pc and sp are sane, try the jump to the application
 	 */
 
+#if defined(INCLUDE_USB)
 	/* Disable USB */
 	PIOS_USBHOOK_Deactivate();
+#endif
 
 #if defined(STM32F7XX)
 	/* Re-lock the internal flash */

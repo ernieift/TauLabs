@@ -30,7 +30,7 @@
 #define __USB_CONF__H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 
 /** @addtogroup USB_OTG_DRIVER

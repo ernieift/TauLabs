@@ -2,12 +2,12 @@
  ******************************************************************************
  * @addtogroup TauLabsTargets Tau Labs Targets
  * @{
- * @addtogroup FlyingF4 FlyingF4 support files
+ * @addtogroup FlyingF7 FlyingF7 support files
  * @{
  *
- * @file       STM32F4xx_FlyingF4.c 
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
- * @brief      Board define file for FlyingF4
+ * @file       STM32F7xx_FlyingF7.c 
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
+ * @brief      Board define file for FlyingF7
  * @see        The GNU Public License (GPL) Version 3
  * 
  *****************************************************************************/

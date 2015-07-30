@@ -2,11 +2,11 @@
  ******************************************************************************
  * @addtogroup TauLabsTargets Tau Labs Targets
  * @{
- * @addtogroup FlyingF4 FlyingF4 support files
+ * @addtogroup FlyingF7 FlyingF7 support files
  * @{
  *
  * @file       pios_usb_board_data.c 
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
  * @brief      Board specific USB specifications
  * @see        The GNU Public License (GPL) Version 3
  * 

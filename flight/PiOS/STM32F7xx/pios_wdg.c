@@ -40,8 +40,11 @@ static struct wdg_configuration {
 	uint32_t bootup_flags;
 } wdg_configuration;
 
+#if defined(PIOS_INCLUDE_WDG)
 /* IWDG handle */
 static IWDG_HandleTypeDef hiwdg;
+#endif
+
 /* RTC handle */
 static RTC_HandleTypeDef hrtc;
 

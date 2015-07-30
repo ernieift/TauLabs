@@ -2,7 +2,7 @@
  ******************************************************************************
  * @addtogroup TauLabsTargets Tau Labs Targets
  * @{
- * @addtogroup FlyingF4 FlyingF4 support files
+ * @addtogroup FlyingF7 FlyingF7 support files
  * @{
  *
  * @file       pios_usb_board_data.h

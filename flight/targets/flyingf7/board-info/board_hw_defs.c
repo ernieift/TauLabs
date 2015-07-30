@@ -6,9 +6,9 @@
  * @{
  *
  * @file       board_hw_defs.c 
- * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
+ * @author     Tau Labs, http://taulabs.org, Copyright (C) 2015
  * @brief      Defines board specific static initializers for hardware for the
- *             FlyingF4 board.
+ *             FlyingF7 board.
  * @see        The GNU Public License (GPL) Version 3
  * 
  *****************************************************************************/
