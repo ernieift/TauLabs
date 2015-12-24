@@ -60,18 +60,8 @@ public:
         QString serialNumber;
         QString manufacturer;
         QString product;
-        int UsagePage;
-        int Usage;
         int vendorID;
         int productID;
-        // the convention for DFU mode is to change the
-        // Lower byte of bcdDevice depending on whether
-        // the board is in Bootloader mode or running mode.
-        // We provide the relevant values there:
-        int bootloaderMode;
-        int runningMode;
-        int bcdDevice; // Note: not that useful, the two values above
-                       // cater for almost the same into
     };
 
 
@@ -219,6 +209,12 @@ public:
     virtual bool bindRadio(quint32 /*id*/, quint32 /*baud_rate*/, float /*rf_power*/,
                            Core::IBoardType::LinkMode /*linkMode*/, quint8 /*min*/,
                            quint8 /*max*/) { return false; }
+
+    /**
+     * Check whether the board has USB
+     * @return true if usb, false if not
+     */
+    virtual bool isUSBSupported() { return true; }
 
     static QString getBoardNameFromID(int id);
 
