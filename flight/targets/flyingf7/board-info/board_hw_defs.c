@@ -1609,11 +1609,10 @@ static const struct pios_usb_cfg pios_usb_main_cfg = {
 	.vsense = {
 		.gpio = GPIOA,
 		.init = {
-			.GPIO_Pin   = GPIO_Pin_9,
-			.GPIO_Speed = GPIO_Speed_25MHz,
-			.GPIO_Mode  = GPIO_Mode_IN,
-			.GPIO_OType = GPIO_OType_OD,
-			.GPIO_PuPd  = GPIO_PuPd_NOPULL,
+			.Pin   = GPIO_PIN_9,
+			.Speed = GPIO_SPEED_FAST,
+			.Mode  = GPIO_MODE_INPUT,
+			.Pull  = GPIO_NOPULL
 		},
 	}
 };
